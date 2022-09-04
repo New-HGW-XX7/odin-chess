@@ -31,6 +31,19 @@ class Rook < Piece
       current_row -= 1
       self.legal_moves[:up] << [current_row, current_col]
     end
-    self.legal_moves[:up] << [current_row - 1, current_col] if board[current_row - 1][current_col].color != self.color
+    unless (current_row - 1) < 0 || board[current_row - 1][current_col].nil?
+      self.legal_moves[:up] << [current_row - 1, current_col] if board[current_row - 1][current_col].color != self.color
+    end
+
+    current_row = @row
+    current_col = @column
+    # Going down
+    until (current_row + 1) > 7 #|| (!board[current_row + 1].nil? and !board[current_row + 1][current_col].nil?)
+      current_row += 1
+      self.legal_moves[:down] << [current_row, current_col]
+    end
+    unless (current_row + 1) > 7 #|| board[current_row + 1][current_col].nil?
+      self.legal_moves[:down] << [current_row + 1, current_col] if board[current_row + 1][current_col].color != self.color
+    end
   end
 end
