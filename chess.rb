@@ -38,8 +38,10 @@ end
 
 game = Game.new
 game.board[0][2] = Rook.new('black', 0, 2)
+game.board[2][0] = Rook.new('black', 2, 0)
+game.board[5][2] = Rook.new('white', 5, 2)
+game.board[2][5] = Rook.new('white', 2, 5)
 rook = game.test_piece
 game.board[2][2] = rook
 game.print_board
 p rook
-

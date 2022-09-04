@@ -31,19 +31,41 @@ class Rook < Piece
       current_row -= 1
       self.legal_moves[:up] << [current_row, current_col]
     end
-    unless (current_row - 1) < 0 || board[current_row - 1][current_col].nil?
+    unless (current_row - 1) < 0 #|| board[current_row - 1][current_col].nil?
       self.legal_moves[:up] << [current_row - 1, current_col] if board[current_row - 1][current_col].color != self.color
     end
 
     current_row = @row
     current_col = @column
     # Going down
-    until (current_row + 1) > 7 #|| (!board[current_row + 1].nil? and !board[current_row + 1][current_col].nil?)
+    until (current_row + 1) > 7 || (!board[current_row + 1].nil? and !board[current_row + 1][current_col].nil?)
       current_row += 1
       self.legal_moves[:down] << [current_row, current_col]
     end
     unless (current_row + 1) > 7 #|| board[current_row + 1][current_col].nil?
-      self.legal_moves[:down] << [current_row + 1, current_col] if board[current_row + 1][current_col].color != self.color
+      self.legal_moves[:down] << [current_row + 1, current_col] if !board[current_row + 1].nil? and board[current_row + 1][current_col].color != self.color
+    end
+
+    current_row = @row
+    current_col = @column
+    # Going left
+    until (current_col - 1) < 0 || !board[current_row][current_col - 1].nil?
+      current_col -= 1
+      self.legal_moves[:left] << [current_row, current_col]
+    end
+    unless (current_col - 1) < 0
+      self.legal_moves[:left] << [current_row, current_col - 1] if board[current_row][current_col - 1].color != self.color
+    end
+    
+    current_row = @row
+    current_col = @column
+    # Going right
+    until (current_col + 1) > 7 || !board[current_row][current_col + 1].nil?
+      current_col += 1
+      self.legal_moves[:right] << [current_row, current_col]
+    end
+    unless (current_col + 1) > 7
+      self.legal_moves[:right] << [current_row, current_col + 1] if !board[current_row][current_col + 1].nil? and board[current_row][current_col + 1].color != self.color
     end
   end
 end
