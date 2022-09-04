@@ -19,9 +19,9 @@ class Game
           end
         else
           if counter == 8
-            print "[#{value.sign.encode('utf-8')}]\n"
+            print "[#{value.sign}]\n"
           else
-            print "[#{value.sign.encode('utf-8')}]"
+            print "[#{value.sign}]"
           end
         end
       end
@@ -29,12 +29,17 @@ class Game
   end
 
   def test_piece
-    p Rook.new('black', 2, 2)
+    rook = Rook.new('black', 2, 2)
+    rook.find_legal_moves(@board)
+    rook
   end
 
 end
 
 game = Game.new
-
-game.board[2][1] = game.test_piece
+game.board[0][2] = Rook.new('black', 0, 2)
+rook = game.test_piece
+game.board[2][2] = rook
 game.print_board
+p rook
+

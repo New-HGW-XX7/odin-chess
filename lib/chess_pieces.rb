@@ -1,4 +1,5 @@
 class Piece
+  attr_reader :color
   def initialize(color, row, column)
     @color = color
     @row = row
@@ -12,12 +13,24 @@ class Rook < Piece
     super
     @type = 'rook'
     @sign = color == 'white' ? 'WR' : 'BR'
-    @legal_moves = {
+    @legal_moves = { # Have to be cleared on every new assessment
       up: [], # Up meaning lowering row values
       down: [], # Increasing row values
       left: [], # Same row, lower column values
       right: [] # Same row, higher column values
     }
     # @legal_moves[:up] << [column, row] Run respective methods here
+  end
+
+  def find_legal_moves(board)
+    current_row = @row
+    current_col = @column
+
+    # Going up
+    until (current_row - 1) < 0 || (!board[current_row - 1].nil? and !board[current_row - 1][current_col].nil?)
+      current_row -= 1
+      self.legal_moves[:up] << [current_row, current_col]
+    end
+    self.legal_moves[:up] << [current_row - 1, current_col] if board[current_row - 1][current_col].color != self.color
   end
 end
