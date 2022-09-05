@@ -1,6 +1,7 @@
 require './lib/chess_pieces.rb'
 require './lib/rook.rb'
 require './lib/bishop.rb'
+require './lib/queen.rb'
 
 class Game
   attr_accessor :board
@@ -31,19 +32,28 @@ class Game
   end
 
   def test_piece
-    bishop = Bishop.new('black', 2, 2)
-    bishop.find_legal_moves(@board)
-    bishop
+    queen = Queen.new('black', 2, 2)
+    queen.find_legal_moves(@board)
+    queen
   end
 
 end
 
 game = Game.new
-game.board[0][2] = Rook.new('black', 0, 2)
+
+game.board[1][1] = Rook.new('white', 1, 1)
+game.board[3][1] = Rook.new('white', 3, 1)
+game.board[1][3] = Rook.new('white', 1, 3)
+game.board[3][3] = Rook.new('white', 3, 3)
+
+game.board[1][1] = Rook.new('black', 1, 1)
 game.board[2][0] = Rook.new('black', 2, 0)
 game.board[5][2] = Rook.new('white', 5, 2)
 game.board[2][5] = Rook.new('white', 2, 5)
-bishop = game.test_piece
-game.board[2][2] = bishop
+
+
+
+queen = game.test_piece
+game.board[2][2] = queen
 game.print_board
-p bishop
+p queen
