@@ -1,4 +1,5 @@
 require './lib/chess_pieces.rb'
+require './lib/rook.rb'
 
 class Game
   attr_accessor :board
