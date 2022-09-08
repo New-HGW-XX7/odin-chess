@@ -23,46 +23,44 @@ class Knight < Piece
     current_row = @row
     current_col = @column
 
-    # Going up
-    until (current_row - 1) < 0 || (!board[current_row - 1].nil? and !board[current_row - 1][current_col].nil?)
-      current_row -= 1
-      self.legal_moves[:up] << [current_row, current_col]
-    end
-    unless (current_row - 1) < 0 #|| board[current_row - 1][current_col].nil?
-      self.legal_moves[:up] << [current_row - 1, current_col] if board[current_row - 1][current_col].color != self.color
+    # Going up left short
+    unless (current_row - 1) < 0 || (current_col - 2) < 0
+      self.legal_moves[:up_left_short] << [current_row - 1, current_col - 2] if board[current_row - 1][current_col - 2].nil? or board[current_row - 1][current_col - 2].color != self.color
     end
 
-    current_row = @row
-    current_col = @column
-    # Going down
-    until (current_row + 1) > 7 || (!board[current_row + 1].nil? and !board[current_row + 1][current_col].nil?)
-      current_row += 1
-      self.legal_moves[:down] << [current_row, current_col]
-    end
-    unless (current_row + 1) > 7 #|| board[current_row + 1][current_col].nil?
-      self.legal_moves[:down] << [current_row + 1, current_col] if !board[current_row + 1].nil? and board[current_row + 1][current_col].color != self.color
+    # Going up left long
+    unless (current_row - 2) < 0 || (current_col - 1) < 0
+      self.legal_moves[:up_left_long] << [current_row - 2, current_col - 1] if board[current_row - 2][current_col - 1].nil? or board[current_row - 2][current_col - 1].color != self.color
     end
 
-    current_row = @row
-    current_col = @column
-    # Going left
-    until (current_col - 1) < 0 || !board[current_row][current_col - 1].nil?
-      current_col -= 1
-      self.legal_moves[:left] << [current_row, current_col]
+    # Going up right short
+    unless (current_row - 1) < 0 || (current_col + 2) > 7
+      self.legal_moves[:up_right_short] << [current_row - 1, current_col + 2] if board[current_row - 1][current_col + 2].nil? or board[current_row - 1][current_col + 2].color != self.color
     end
-    unless (current_col - 1) < 0
-      self.legal_moves[:left] << [current_row, current_col - 1] if board[current_row][current_col - 1].color != self.color
+
+    # Going up right long
+    unless (current_row - 2) < 0 || (current_col + 1) > 7
+      self.legal_moves[:up_right_long] << [current_row - 2, current_col + 1] if board[current_row - 2][current_col + 1].nil? or board[current_row - 2][current_col + 1].color != self.color
     end
-    
-    current_row = @row
-    current_col = @column
-    # Going right
-    until (current_col + 1) > 7 || !board[current_row][current_col + 1].nil?
-      current_col += 1
-      self.legal_moves[:right] << [current_row, current_col]
+
+    # Going down left short
+    unless (current_row + 1) > 7 || (current_col - 2) < 0
+      self.legal_moves[:down_left_short] << [current_row + 1, current_col - 2] if board[current_row + 1][current_col - 2].nil? or board[current_row + 1][current_col - 2].color != self.color
     end
-    unless (current_col + 1) > 7
-      self.legal_moves[:right] << [current_row, current_col + 1] if !board[current_row][current_col + 1].nil? and board[current_row][current_col + 1].color != self.color
+
+    # Going down left long
+    unless (current_row + 2) > 7 || (current_col - 1) < 0
+      self.legal_moves[:down_left_long] << [current_row + 2, current_col - 1] if board[current_row + 2][current_col - 1].nil? or board[current_row + 2][current_col - 1].color != self.color
+    end
+
+    # Going down right short
+    unless (current_row + 1) > 7 || (current_col + 2) > 7
+      self.legal_moves[:down_right_short] << [current_row + 1, current_col + 2] if board[current_row + 1][current_col + 2].nil? or board[current_row + 1][current_col + 2].color != self.color
+    end
+
+    # Going down right long
+    unless (current_row + 2) > 7 || (current_col + 1) > 7
+      self.legal_moves[:down_right_long] << [current_row + 2, current_col + 1] if board[current_row + 2][current_col + 1].nil? or board[current_row + 2][current_col + 1].color != self.color
     end
   end
 end
