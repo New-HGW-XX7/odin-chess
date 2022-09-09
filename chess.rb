@@ -23,6 +23,7 @@ class Game
   end
 
   def generate_legal_moves_all(board = @board)
+    # Need to clear and regenerate movesets each turn
     board.each do |row|
       row.each do |field|
         field.find_legal_moves(board) unless field.nil?
@@ -32,11 +33,11 @@ class Game
   end
 
   def print_board
-    @board.each do |subarr|
+    @board.each do |row|
       counter = 0
-      subarr.each do |value|
+      row.each do |field|
         counter += 1
-        if value.nil?
+        if field.nil?
           if counter == 8
             print "[  ]\n"
           else
@@ -44,9 +45,9 @@ class Game
           end
         else
           if counter == 8
-            print "[#{value.sign}]\n"
+            print "[#{field.sign}]\n"
           else
-            print "[#{value.sign}]"
+            print "[#{field.sign}]"
           end
         end
       end
@@ -58,6 +59,21 @@ class Game
     king.find_legal_moves(@board)
     king
   end
+  
+  def select_piece(player_color, board = @board, row = nil, column = nil)
+    until !board[row][column].nil? and board[row][column].color == player_color
+    puts 'Select row'
+    row = gets.chomp.to_i
+    puts 'Select column'
+    column = gets.chomp.to_i
+    end
+    board[row][column]
+  end
+  
+  def play
+    player_color = 'white'
+    selected_piece = select_piece(player_color)
+    # Loop to get
 
   # def play
   #   Set up board with piece objects
@@ -66,9 +82,9 @@ class Game
   #   - Loop
   #   Prompt player with color to select piece #select_piece(player_color)
   #     -> if field nil or piece not own color or has no legal moves* repeat prompt - *if piece is king check if only left -> tie
-  #   Assign variable holding piece
-  #   Prompt player to select target field #select_targetfield(coords)
-  #     1. Check if target is in legal moves of piece -> #is_in_legal?(target coords)
+  #   Assign variable holding piece || selected_piece = return of previous prompt
+  #   Prompt player to select target field -> #select_targetfield(selected_piece)
+  #     1. Check if target is in legal moves of piece -> #is_in_legal?(target coords) || selected_piece.is_in_legal?(x, y)
   #     2. Check if move will produce check for self -> either #is_white_king_threatened?(copy of board with move done) or #is_black_king_threatened?(copy)
   #     3. If criteria met perform move -> #move_piece(piece coords, target coords)
   #   Check if enemy is checked -> #is_white/black_king_threatened?(board)
@@ -91,7 +107,7 @@ end
 game = Game.new
 game.print_board
 game.generate_legal_moves_all
-
+p game.board[0][1]
 # # game.board[1][1] = Rook.new('white', 1, 1)
 # # game.board[3][1] = Rook.new('white', 3, 1)
 # game.board[3][2] = Rook.new('white', 3, 2)

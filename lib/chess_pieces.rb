@@ -5,4 +5,8 @@ class Piece
     @row = row
     @column = column
   end
+
+  def is_in_legal?(row, column)
+    self.legal_moves.any { |set| set.include?([row, column]) }
+  end
 end
