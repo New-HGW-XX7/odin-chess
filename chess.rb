@@ -22,16 +22,6 @@ class Game
     ]
   end
 
-  def generate_legal_moves_all(board = @board)
-    # Need to clear and regenerate movesets each turn
-    board.each do |row|
-      row.each do |field|
-        field.find_legal_moves(board) unless field.nil?
-        puts "#{field.sign} at #{field.row} / #{field.column} has moves: #{field.legal_moves}" unless field.nil?
-      end
-    end
-  end
-
   def print_board
     @board.each do |row|
       counter = 0
@@ -54,6 +44,16 @@ class Game
     end
   end
 
+  def generate_legal_moves_all(board = @board)
+    # Need to clear and regenerate movesets each turn
+    board.each do |row|
+      row.each do |field|
+        field.find_legal_moves(board) unless field.nil?
+        puts "#{field.sign} at #{field.row} / #{field.column} has moves: #{field.legal_moves}" unless field.nil?
+      end
+    end
+  end
+
   def test_piece
     king = King.new('black', 2, 2)
     king.find_legal_moves(@board)
@@ -70,14 +70,7 @@ class Game
     # Check for tie
     board[row][column]
   end
-
-  def move(board, origin_row, origin_column, target_row, target_column)
-    board[target_row][target_column] = board[origin_row][origin_column]
-    board[origin_row][origin_column] = nil
-
-    board
-  end
-
+  
   def select_targetfield(piece, player_color = player_color, board = @board, row = nil, column = nil)
     status_legal = false
     until status_legal
@@ -85,12 +78,12 @@ class Game
       row = gets.chomp.to_i
       puts 'Select target column'
       column = gets.chomp.to_i
-
+      
       # Setting up second condition
       temp_game = Game.new
       temp_game.board = board
       temp_board = temp_game.move(temp_game.board piece.row, piece.column, row, column)
-
+      
       if (piece.is_in_legal?(row, column) == true) and (is_king_threatened?(temp_board, player_color) == false)
         status_legal = true
       else 
@@ -98,6 +91,13 @@ class Game
       end
     end
     [row, column]
+  end
+  
+  def move(board, origin_row, origin_column, target_row, target_column)
+    board[target_row][target_column] = board[origin_row][origin_column]
+    board[origin_row][origin_column] = nil
+
+    board
   end
 
   def is_king_threatened?(board, color_of_king)
@@ -118,9 +118,29 @@ class Game
     end
   end
 
+  def is_checkmate?(board, color_of_king)
+    board.generate_legal_moves_all
+    possible_threats = []
+    king_row = nil
+    king_column = nil
+    king = nil
+    board.each do |row|
+      row.each do |field|
+        king_row = field.row if !field.nil? and field.type == 'king' and field.color == color_of_king
+        king_column = field.column if !field.nil? and field.type == 'king' and field.color == color_of_king
+        field << possible_threats unless field.nil? or field.color == color_of_king
+      end
+    end
+    king = board[king_row, king_column]
+    return false unless king.legal_moves.all? { |set| set.empty? }
 
+    # Extract pathss of attack from possible_threats
+    # Further up create an array of own pieces except king
+    # For each path check if any of these pieces can intercept path or kill threat
+    # Simulate each interception and check if king is still threatened -> if still threatened, checkmate
 
   def play
+    game_over = false
     generate_legal_moves_all
     player_color = 'white'
     enemy_color = 'black'
