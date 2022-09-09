@@ -123,10 +123,16 @@ class Game
   def play
     generate_legal_moves_all
     player_color = 'white'
+    enemy_color = 'black'
     # Start loop
     selected_piece = select_piece(player_color)
     selected_coordinates = select_targetfield(selected_piece)
     @board = move(@board, selected_piece.row, select_piece.column, selected_coordinates[0], selected_coordinates[1])
+
+    # Evaluate check and checkmate
+    if is_king_threatened?(@board, enemy_color)
+      puts 'Check'
+      is_checkmate?(@board, enemy_color)
 
 
 
@@ -148,6 +154,7 @@ class Game
 
 
   #   Check if enemy is checked -> #is_white/black_king_threatened?(board)
+
   #     If yes, declare check and evaluate checkmate
   #     #is_checkmate?(board, enemyking)
   #       if king has legal moves -> false
