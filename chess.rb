@@ -22,6 +22,15 @@ class Game
     ]
   end
 
+  def generate_legal_moves_all(board = @board)
+    board.each do |row|
+      row.each do |field|
+        field.find_legal_moves(board) unless field.nil?
+        puts "#{field.sign} at #{field.row} / #{field.column} has moves: #{field.legal_moves}" unless field.nil?
+      end
+    end
+  end
+
   def print_board
     @board.each do |subarr|
       counter = 0
@@ -81,7 +90,7 @@ end
 
 game = Game.new
 game.print_board
-
+game.generate_legal_moves_all
 
 # # game.board[1][1] = Rook.new('white', 1, 1)
 # # game.board[3][1] = Rook.new('white', 3, 1)
