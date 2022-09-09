@@ -4,6 +4,7 @@ require './lib/bishop.rb'
 require './lib/queen.rb'
 require './lib/knight.rb'
 require './lib/pawn.rb'
+require '.lib/king.rb'
 
 class Game
   attr_accessor :board
