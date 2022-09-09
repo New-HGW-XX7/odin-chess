@@ -40,6 +40,33 @@ class Game
     king
   end
 
+  # def play
+  #   Set up board with piece objects
+  #   Generate legal moves for every piece
+  #   Set player_color to white
+  #   - Loop
+  #   Prompt player with color to select piece #select_piece(player_color)
+  #     -> if field nil or piece not own color or has no legal moves* repeat prompt - *if piece is king check if only left -> tie
+  #   Assign variable holding piece
+  #   Prompt player to select target field #select_targetfield(coords)
+  #     1. Check if target is in legal moves of piece -> #is_in_legal?(target coords)
+  #     2. Check if move will produce check for self -> either #is_white_king_threatened?(copy of board with move done) or #is_black_king_threatened?(copy)
+  #     3. If criteria met perform move -> #move_piece(piece coords, target coords)
+  #   Check if enemy is checked -> #is_white/black_king_threatened?(board)
+  #     If yes, declare check and evaluate checkmate
+  #     #is_checkmate?(board, enemyking)
+  #       if king has legal moves -> false
+  #       else determine path of attack + attacking pieces coords
+  #         -> can any own piece intercept?
+  #         if yes -> false
+  #         else true
+  #   If checkmate true break loop
+  #   If checkmate false change player_color
+  # end
+
+
+        
+
 end
 
 game = Game.new
