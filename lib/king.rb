@@ -4,8 +4,8 @@ class King < Piece
   attr_reader :sign, :legal_moves
   def initialize(color, row, column)
     super
-    @type = 'rook'
-    @sign = color == 'white' ? 'WR' : 'BR'
+    @type = 'king'
+    @sign = color == 'white' ? 'WS' : 'BS' # S for Shah
     @legal_moves = { # Have to be cleared on every new assessment
       up: [], # Up meaning lowering row values
       down: [], # Increasing row values
@@ -24,45 +24,43 @@ class King < Piece
     current_col = @column
 
     # Going up
-    until (current_row - 1) < 0 || (!board[current_row - 1].nil? and !board[current_row - 1][current_col].nil?)
-      current_row -= 1
-      self.legal_moves[:up] << [current_row, current_col]
-    end
     unless (current_row - 1) < 0 #|| board[current_row - 1][current_col].nil?
-      self.legal_moves[:up] << [current_row - 1, current_col] if board[current_row - 1][current_col].color != self.color
+      self.legal_moves[:up] << [current_row - 1, current_col] if board[current_row - 1][current_col].nil? or board[current_row - 1][current_col].color != self.color
     end
 
-    current_row = @row
-    current_col = @column
     # Going down
-    until (current_row + 1) > 7 || (!board[current_row + 1].nil? and !board[current_row + 1][current_col].nil?)
-      current_row += 1
-      self.legal_moves[:down] << [current_row, current_col]
-    end
     unless (current_row + 1) > 7 #|| board[current_row + 1][current_col].nil?
-      self.legal_moves[:down] << [current_row + 1, current_col] if !board[current_row + 1].nil? and board[current_row + 1][current_col].color != self.color
+      self.legal_moves[:down] << [current_row + 1, current_col] if board[current_row + 1][current_col].nil? or board[current_row + 1][current_col].color != self.color
     end
 
-    current_row = @row
-    current_col = @column
     # Going left
-    until (current_col - 1) < 0 || !board[current_row][current_col - 1].nil?
-      current_col -= 1
-      self.legal_moves[:left] << [current_row, current_col]
-    end
     unless (current_col - 1) < 0
-      self.legal_moves[:left] << [current_row, current_col - 1] if board[current_row][current_col - 1].color != self.color
+      self.legal_moves[:left] << [current_row, current_col - 1] if board[current_row][current_col - 1].nil? or board[current_row][current_col - 1].color != self.color
     end
-    
-    current_row = @row
-    current_col = @column
+
     # Going right
-    until (current_col + 1) > 7 || !board[current_row][current_col + 1].nil?
-      current_col += 1
-      self.legal_moves[:right] << [current_row, current_col]
-    end
     unless (current_col + 1) > 7
-      self.legal_moves[:right] << [current_row, current_col + 1] if !board[current_row][current_col + 1].nil? and board[current_row][current_col + 1].color != self.color
+      self.legal_moves[:right] << [current_row, current_col + 1] if board[current_row][current_col + 1].nil? or board[current_row][current_col + 1].color != self.color
+    end
+
+    # Going up left
+    unless (current_row - 1) < 0 || (current_col - 1) < 0
+      self.legal_moves[:up_left] << [current_row - 1, current_col - 1] if board[current_row - 1][current_col - 1].nil? or board[current_row - 1][current_col - 1].color != self.color
+    end
+
+    # Going up right
+    unless (current_row - 1) < 0 || (current_col + 1) > 7
+      self.legal_moves[:up_right] << [current_row - 1, current_col + 1] if board[current_row - 1][current_col + 1].nil? or board[current_row - 1][current_col + 1].color != self.color
+    end
+
+    # Going down left
+    unless (current_row + 1) > 7 || (current_col - 1) < 0
+      self.legal_moves[:down_left] << [current_row + 1, current_col - 1] if board[current_row + 1][current_col - 1].nil? or board[current_row + 1][current_col - 1].color != self.color
+    end
+
+    # Going down right
+    unless (current_row + 1) > 7 || (current_col + 1) > 7
+      self.legal_moves[:down_right] << [current_row + 1, current_col + 1] if board[current_row + 1][current_col + 1].nil? or board[current_row + 1][current_col + 1].color != self.color
     end
   end
 end

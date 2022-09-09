@@ -4,7 +4,7 @@ require './lib/bishop.rb'
 require './lib/queen.rb'
 require './lib/knight.rb'
 require './lib/pawn.rb'
-require '.lib/king.rb'
+require './lib/king.rb'
 
 class Game
   attr_accessor :board
@@ -35,9 +35,9 @@ class Game
   end
 
   def test_piece
-    pawn = Pawn.new('black', 2, 2)
-    pawn.find_legal_moves(@board)
-    pawn
+    king = King.new('black', 2, 2)
+    king.find_legal_moves(@board)
+    king
   end
 
 end
@@ -48,14 +48,14 @@ game = Game.new
 # game.board[3][1] = Rook.new('white', 3, 1)
 game.board[3][2] = Rook.new('white', 3, 2)
 game.board[3][1] = Rook.new('white', 3, 1)
-game.board[3][3] = Rook.new('black', 3, 3)
+game.board[3][3] = Rook.new('white', 3, 3)
 # game.board[2][0] = Rook.new('black', 2, 0)
 # game.board[5][2] = Rook.new('white', 5, 2)
 # game.board[2][5] = Rook.new('white', 2, 5)
 
 
 
-pawn = game.test_piece
-game.board[2][2] = pawn
+king = game.test_piece
+game.board[2][2] = king
 game.print_board
-p pawn
+p king
