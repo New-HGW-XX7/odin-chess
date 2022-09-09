@@ -9,7 +9,17 @@ require './lib/king.rb'
 class Game
   attr_accessor :board
   def initialize
-    @board = Array.new(8) { Array.new(8, nil) }
+    # @board = Array.new(8) { Array.new(8, nil) }
+    @board = [
+      [Rook.new('black', 0, 0), Knight.new('black', 0, 1), Bishop.new('black', 0, 2), Queen.new('black', 0, 3), King.new('black', 0, 4), Bishop.new('black', 0, 5), Knight.new('black', 0, 6), Rook.new('black', 0, 7)], # Row 0
+      [Pawn.new('black', 1, 0), Pawn.new('black', 1, 1), Pawn.new('black', 1, 2), Pawn.new('black', 1, 3), Pawn.new('black', 1, 4), Pawn.new('black', 1, 5), Pawn.new('black', 1, 6), Pawn.new('black', 1, 7)], # Row 1
+      [nil, nil, nil, nil, nil, nil, nil, nil], # Row 2
+      [nil, nil, nil, nil, nil, nil, nil, nil], # Row 3
+      [nil, nil, nil, nil, nil, nil, nil, nil], # Row 4
+      [nil, nil, nil, nil, nil, nil, nil, nil], # Row 5
+      [Pawn.new('white', 6, 0), Pawn.new('white', 6, 1), Pawn.new('white', 6, 2), Pawn.new('white', 6, 3), Pawn.new('white', 6, 4), Pawn.new('white', 6, 5), Pawn.new('white', 6, 6), Pawn.new('white', 6, 7)], # Row 6
+      [Rook.new('white', 7, 0), Knight.new('white', 7, 1), Bishop.new('white', 7, 2), Queen.new('white', 7, 3), King.new('white', 7, 4), Bishop.new('white', 7, 5), Knight.new('white', 7, 6), Rook.new('white', 7, 7)] # Row 7
+    ]
   end
 
   def print_board
@@ -70,19 +80,21 @@ class Game
 end
 
 game = Game.new
-
-# game.board[1][1] = Rook.new('white', 1, 1)
-# game.board[3][1] = Rook.new('white', 3, 1)
-game.board[3][2] = Rook.new('white', 3, 2)
-game.board[3][1] = Rook.new('white', 3, 1)
-game.board[3][3] = Rook.new('white', 3, 3)
-# game.board[2][0] = Rook.new('black', 2, 0)
-# game.board[5][2] = Rook.new('white', 5, 2)
-# game.board[2][5] = Rook.new('white', 2, 5)
-
-
-
-king = game.test_piece
-game.board[2][2] = king
 game.print_board
-p king
+
+
+# # game.board[1][1] = Rook.new('white', 1, 1)
+# # game.board[3][1] = Rook.new('white', 3, 1)
+# game.board[3][2] = Rook.new('white', 3, 2)
+# game.board[3][1] = Rook.new('white', 3, 1)
+# game.board[3][3] = Rook.new('white', 3, 3)
+# # game.board[2][0] = Rook.new('black', 2, 0)
+# # game.board[5][2] = Rook.new('white', 5, 2)
+# # game.board[2][5] = Rook.new('white', 2, 5)
+
+
+
+# king = game.test_piece
+# game.board[2][2] = king
+# game.print_board
+# p king
