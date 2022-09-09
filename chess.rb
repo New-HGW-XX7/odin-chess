@@ -71,7 +71,7 @@ class Game
     board[row][column]
   end
 
-  def select_targetfield(piece, board = @board, row = nil, column = nil)
+  def select_targetfield(piece, player_color = player_color, board = @board, row = nil, column = nil)
     status_legal = false
     until status_legal # Is move legal in principle?
       puts 'Select target row'
@@ -83,12 +83,41 @@ class Game
     end
 
     status_noselfcheck = false
-    until status_noselfcheck # Will move open up own king?
+    until status_noselfcheck # Will move open up own king? Create temporary new instance of Game with move performed?
+      # gets coords
+      temp_game = Game.new
+      temp_game.move(coords)
+      temp_board = temp_game.board
+      is_king_threatened?(temp_board, player_color) ? puts 'Illegal. Would selfcheck' : status_noselfcheck = true
+    end
+  end
+
+  def is_king_threatened?(board, color_of_king)
+    board.generate_legal_moves_all
+    possible_threats = []
+    king_row = nil
+    king_column = nil
+    board.each do |row|
+      row.each do |field|
+        king_row = field.row if !field.nil? and field.type == 'king' and field.color == color_of_king
+        king_column = field.column if !field.nil? and field.type == 'king' and field.color == color_of_king
+        field << possible_threats unless field.nil? or field.color == color_of_king
+      end
+    end
+
+    possible_threats.any? do |piece|
+      piece.legal_moves.any? { |set| set.include?([king_row, king_column]) }
+    end
+  end
+
+
+
   def play
+    generate_legal_moves_all
     player_color = 'white'
     # Start loop
     selected_piece = select_piece(player_color)
-    selected_target_coordinates = select_targetfield(selected_piece)
+    select_targetfield(selected_piece)
 
   # def play
   #   Set up board with piece objects
