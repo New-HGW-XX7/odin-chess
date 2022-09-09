@@ -67,13 +67,28 @@ class Game
     puts 'Select column'
     column = gets.chomp.to_i
     end
+    # Check for tie
     board[row][column]
   end
-  
+
+  def select_targetfield(piece, board = @board, row = nil, column = nil)
+    status_legal = false
+    until status_legal # Is move legal in principle?
+      puts 'Select target row'
+      row = gets.chomp.to_i
+      puts 'Select target column'
+      column = gets.chomp.to_i
+
+      piece.is_in_legal?(row, column) ? status_legal = true : puts 'Illegal move'
+    end
+
+    status_noselfcheck = false
+    until status_noselfcheck # Will move open up own king?
   def play
     player_color = 'white'
+    # Start loop
     selected_piece = select_piece(player_color)
-    # Loop to get
+    selected_target_coordinates = select_targetfield(selected_piece)
 
   # def play
   #   Set up board with piece objects
@@ -82,11 +97,16 @@ class Game
   #   - Loop
   #   Prompt player with color to select piece #select_piece(player_color)
   #     -> if field nil or piece not own color or has no legal moves* repeat prompt - *if piece is king check if only left -> tie
+
   #   Assign variable holding piece || selected_piece = return of previous prompt
+
   #   Prompt player to select target field -> #select_targetfield(selected_piece)
   #     1. Check if target is in legal moves of piece -> #is_in_legal?(target coords) || selected_piece.is_in_legal?(x, y)
+
   #     2. Check if move will produce check for self -> either #is_white_king_threatened?(copy of board with move done) or #is_black_king_threatened?(copy)
   #     3. If criteria met perform move -> #move_piece(piece coords, target coords)
+
+
   #   Check if enemy is checked -> #is_white/black_king_threatened?(board)
   #     If yes, declare check and evaluate checkmate
   #     #is_checkmate?(board, enemyking)
