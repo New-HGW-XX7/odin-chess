@@ -71,7 +71,12 @@ class Game
     board[row][column]
   end
 
-  def move(origin_row, origin_column, target_row, target_column)
+  def move(board, origin_row, origin_column, target_row, target_column)
+    board[target_row][target_column] = board[origin_row][origin_column]
+    board[origin_row][origin_column] = nil
+
+    board
+  end
 
   def select_targetfield(piece, player_color = player_color, board = @board, row = nil, column = nil)
     status_legal = false
@@ -84,8 +89,7 @@ class Game
       # Setting up second condition
       temp_game = Game.new
       temp_game.board = board
-      temp_game.move(piece.row, piece. column, row, column)
-      temp_board = temp_game.board
+      temp_board = temp_game.move(temp_game.board piece.row, piece.column, row, column)
 
       if (piece.is_in_legal?(row, column) == true) and (is_king_threatened?(temp_board, player_color) == false)
         status_legal = true
@@ -93,6 +97,7 @@ class Game
         puts 'Illegal move'
       end
     end
+    [row, column]
   end
 
   def is_king_threatened?(board, color_of_king)
@@ -120,7 +125,10 @@ class Game
     player_color = 'white'
     # Start loop
     selected_piece = select_piece(player_color)
-    select_targetfield(selected_piece)
+    selected_coordinates = select_targetfield(selected_piece)
+    @board = move(@board, selected_piece.row, select_piece.column, selected_coordinates[0], selected_coordinates[1])
+
+
 
   # def play
   #   Set up board with piece objects
