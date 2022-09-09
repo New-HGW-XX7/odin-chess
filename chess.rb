@@ -71,24 +71,27 @@ class Game
     board[row][column]
   end
 
+  def move(origin_row, origin_column, target_row, target_column)
+
   def select_targetfield(piece, player_color = player_color, board = @board, row = nil, column = nil)
     status_legal = false
-    until status_legal # Is move legal in principle?
+    until status_legal
       puts 'Select target row'
       row = gets.chomp.to_i
       puts 'Select target column'
       column = gets.chomp.to_i
 
-      piece.is_in_legal?(row, column) ? status_legal = true : puts 'Illegal move'
-    end
-
-    status_noselfcheck = false
-    until status_noselfcheck # Will move open up own king? Create temporary new instance of Game with move performed?
-      # gets coords
+      # Setting up second condition
       temp_game = Game.new
-      temp_game.move(coords)
+      temp_game.board = board
+      temp_game.move(piece.row, piece. column, row, column)
       temp_board = temp_game.board
-      is_king_threatened?(temp_board, player_color) ? puts 'Illegal. Would selfcheck' : status_noselfcheck = true
+
+      if (piece.is_in_legal?(row, column) == true) and (is_king_threatened?(temp_board, player_color) == false)
+        status_legal = true
+      else 
+        puts 'Illegal move'
+      end
     end
   end
 
