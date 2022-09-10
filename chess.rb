@@ -88,10 +88,10 @@ class Game
       temp_game = Game.new
       copy_of_mainboard = Marshal.load( Marshal.dump(@board) )
       temp_game.board = copy_of_mainboard
-      puts 'Instance of Game created'
-      puts "mainboard: #{self.board}"
-      puts "\n\n"
-      puts "tempboard: #{temp_game.board}"
+      # puts 'Instance of Game created'
+      # puts "mainboard: #{self.board}"
+      # puts "\n\n"
+      # puts "tempboard: #{temp_game.board}"
       temp_game.move(piece.row, piece.column, row, column)
 
       if (piece.is_in_legal?(row, column) == true) and (temp_game.is_king_threatened?(piece.color) == false)
@@ -110,7 +110,6 @@ class Game
     #Updating the piece
     self.board[target_row][target_column].row = target_row
     self.board[target_row][target_column].column = target_column
-    #return self.board
   end
 
   def is_king_threatened?(color_of_king)
@@ -141,7 +140,7 @@ class Game
       row.each do |field|
         king_row = field.row if !field.nil? and field.type == 'king' and field.color == color_of_king
         king_column = field.column if !field.nil? and field.type == 'king' and field.color == color_of_king
-        field << possible_threats unless field.nil? or field.color == color_of_king
+        possible_threats << field unless field.nil? or field.color == color_of_king
       end
     end
     king = board[king_row, king_column]
@@ -155,10 +154,11 @@ class Game
 
   def play
     game_over = false
+    checkmate = false
     generate_legal_moves_all
     player_color = 'white'
     enemy_color = 'black'
-    # Start loop
+    # Start loop until checkmate
     self.print_board
     selected_piece = select_piece(player_color)
     selected_coordinates = select_targetfield(selected_piece)
@@ -168,12 +168,16 @@ class Game
     self.move(selected_piece.row, selected_piece.column, selected_coordinates[0], selected_coordinates[1])
 
     # Evaluate check and checkmate
-    #if is_king_threatened?(self, enemy_color)
+    #if self.is_king_threatened?(enemy_color)
     #  puts 'Check'
-    #  is_checkmate?(@board, enemy_color)
+    #  checkmate = self.is_checkmate?(enemy_color)
     #end
 
     self.print_board
+    case player_color
+    when 'white' then player_color = 'black'
+    when 'black' then player_color = 'white'
+    end
   end
   # def play
   #   Set up board with piece objects
