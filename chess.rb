@@ -44,12 +44,19 @@ class Game
     end
   end
 
-  def generate_legal_moves_all(board = @board)
+  def generate_legal_moves_all
     # Need to clear and regenerate movesets each turn
-    board.each do |row|
+    self.board.each do |row|
       row.each do |field|
-        field.legal_moves.each { |key, value| value = [] } unless field.nil?
-        field.find_legal_moves(board) unless field.nil?
+        unless field.nil?
+          field.legal_moves.each do |set, subset| 
+            until subset.empty?
+              subset.pop
+            end
+          end 
+        end
+
+        field.find_legal_moves(self.board) unless field.nil?
         puts "#{field.sign} at #{field.row} / #{field.column} has moves: #{field.legal_moves}" unless field.nil?
       end
     end
@@ -94,10 +101,11 @@ class Game
       # puts "tempboard: #{temp_game.board}"
       temp_game.move(piece.row, piece.column, row, column)
 
-      if (piece.is_in_legal?(row, column) == true) and (temp_game.is_king_threatened?(piece.color) == false)
+      if (piece.is_in_legal?(row, column) == true) and (temp_game.is_king_threatened?(piece.color) == false) # Checking own king
         status_legal = true
       else 
-        puts 'Illegal move'
+        puts 'Illegal move' # Need to go back to piece selection
+        return false
       end
     end
     [row, column]
@@ -110,6 +118,7 @@ class Game
     #Updating the piece
     self.board[target_row][target_column].row = target_row
     self.board[target_row][target_column].column = target_column
+    self.board[target_row][target_column].legal_moves
   end
 
   def is_king_threatened?(color_of_king)
@@ -126,24 +135,24 @@ class Game
     end
 
     possible_threats.any? do |piece|
-      piece.legal_moves.any? { |set| set.include?([king_row, king_column]) }
+      piece.legal_moves.any? { |set, subset| subset.include?([king_row, king_column]) }
     end
   end
 
-  def is_checkmate?(board, color_of_king)
-    board.generate_legal_moves_all
+  def is_checkmate?(color_of_king)
+    self.generate_legal_moves_all
     possible_threats = []
     king_row = nil
     king_column = nil
     king = nil
-    board.each do |row|
+    self.board.each do |row|
       row.each do |field|
         king_row = field.row if !field.nil? and field.type == 'king' and field.color == color_of_king
         king_column = field.column if !field.nil? and field.type == 'king' and field.color == color_of_king
         possible_threats << field unless field.nil? or field.color == color_of_king
       end
     end
-    king = board[king_row, king_column]
+    king = self.board[king_row, king_column]
     return false if king.has_legal_moves?
   end
 
@@ -155,16 +164,14 @@ class Game
   def play
     game_over = false
     checkmate = false
-    generate_legal_moves_all
     player_color = 'white'
     enemy_color = 'black'
-    # Start loop until checkmate
+    until checkmate # Start loop 
+    self.generate_legal_moves_all
     self.print_board
     selected_piece = select_piece(player_color)
     selected_coordinates = select_targetfield(selected_piece)
-    puts "Selected coords: #{selected_coordinates}"
-    p selected_piece
-    gets
+    next if selected_coordinates == false
     self.move(selected_piece.row, selected_piece.column, selected_coordinates[0], selected_coordinates[1])
 
     # Evaluate check and checkmate
@@ -177,6 +184,7 @@ class Game
     case player_color
     when 'white' then player_color = 'black'
     when 'black' then player_color = 'white'
+    end
     end
   end
   # def play

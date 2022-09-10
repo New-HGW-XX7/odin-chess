@@ -1,7 +1,7 @@
 require './lib/chess_pieces.rb'
 
 class Knight < Piece
-  attr_reader :sign, :legal_moves
+  attr_reader :sign
   def initialize(color, row, column)
     super
     @type = 'knight'
