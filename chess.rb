@@ -175,15 +175,20 @@ class Game
     self.move(selected_piece.row, selected_piece.column, selected_coordinates[0], selected_coordinates[1])
 
     # Evaluate check and checkmate
-    #if self.is_king_threatened?(enemy_color)
-    #  puts 'Check'
+    if self.is_king_threatened?(enemy_color)
+      puts 'Check'
+    end
     #  checkmate = self.is_checkmate?(enemy_color)
     #end
 
     self.print_board
     case player_color
-    when 'white' then player_color = 'black'
-    when 'black' then player_color = 'white'
+    when 'white'
+      player_color = 'black'
+      enemy_color = 'white'
+    when 'black'
+      player_color = 'white'
+      enemy_color = 'black'
     end
     end
   end
