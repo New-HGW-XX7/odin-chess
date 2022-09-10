@@ -118,7 +118,7 @@ class Game
     #Updating the piece
     self.board[target_row][target_column].row = target_row
     self.board[target_row][target_column].column = target_column
-    self.board[target_row][target_column].legal_moves
+    #self.board[target_row][target_column].legal_moves
   end
 
   def is_king_threatened?(color_of_king)
