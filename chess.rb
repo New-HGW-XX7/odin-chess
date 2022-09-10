@@ -65,7 +65,7 @@ class Game
     row = 99
     column = 99
     until !board[row].nil? and !board[row][column].nil? and board[row][column].color == player_color and board[row][column].has_legal_moves?
-      puts "Player #{player_color}, select row"
+    puts "Player #{player_color}, select row"
     row = gets.chomp.to_i
     puts 'Select column'
     column = gets.chomp.to_i
@@ -74,7 +74,7 @@ class Game
     board[row][column]
   end
   
-  def select_targetfield(piece, board = @board)
+  def select_targetfield(piece)
     row = 99
     column = 99
     status_legal = false
@@ -86,10 +86,15 @@ class Game
       
       # Setting up second condition
       temp_game = Game.new
-      temp_game.board = board
-      temp_board = temp_game.move(temp_game.board piece.row, piece.column, row, column)
-      
-      if (piece.is_in_legal?(row, column) == true) and (is_king_threatened?(temp_board, piece.color) == false)
+      copy_of_mainboard = Marshal.load( Marshal.dump(@board) )
+      temp_game.board = copy_of_mainboard
+      puts 'Instance of Game created'
+      puts "mainboard: #{self.board}"
+      puts "\n\n"
+      puts "tempboard: #{temp_game.board}"
+      temp_game.move(piece.row, piece.column, row, column)
+
+      if (piece.is_in_legal?(row, column) == true) and (temp_game.is_king_threatened?(piece.color) == false)
         status_legal = true
       else 
         puts 'Illegal move'
@@ -98,23 +103,26 @@ class Game
     [row, column]
   end
   
-  def move(board, origin_row, origin_column, target_row, target_column)
-    board[target_row][target_column] = board[origin_row][origin_column]
-    board[origin_row][origin_column] = nil
+  def move(origin_row, origin_column, target_row, target_column)
+    self.board[target_row][target_column] = board[origin_row][origin_column]
+    self.board[origin_row][origin_column] = nil
 
-    board
+    #Updating the piece
+    self.board[target_row][target_column].row = target_row
+    self.board[target_row][target_column].column = target_column
+    #return self.board
   end
 
-  def is_king_threatened?(board, color_of_king)
-    board.generate_legal_moves_all
+  def is_king_threatened?(color_of_king)
+    self.generate_legal_moves_all
     possible_threats = []
     king_row = nil
     king_column = nil
-    board.each do |row|
+    self.board.each do |row|
       row.each do |field|
         king_row = field.row if !field.nil? and field.type == 'king' and field.color == color_of_king
         king_column = field.column if !field.nil? and field.type == 'king' and field.color == color_of_king
-        field << possible_threats unless field.nil? or field.color == color_of_king
+        possible_threats << field unless field.nil? or field.color == color_of_king
       end
     end
 
@@ -137,7 +145,7 @@ class Game
       end
     end
     king = board[king_row, king_column]
-    return false unless king.legal_moves.all? { |set| set.empty? }
+    return false if king.has_legal_moves?
   end
 
     # Extract pathss of attack from possible_threats
@@ -154,10 +162,13 @@ class Game
     self.print_board
     selected_piece = select_piece(player_color)
     selected_coordinates = select_targetfield(selected_piece)
-    @board = move(@board, selected_piece.row, select_piece.column, selected_coordinates[0], selected_coordinates[1])
+    puts "Selected coords: #{selected_coordinates}"
+    p selected_piece
+    gets
+    self.move(selected_piece.row, selected_piece.column, selected_coordinates[0], selected_coordinates[1])
 
     # Evaluate check and checkmate
-    #if is_king_threatened?(@board, enemy_color)
+    #if is_king_threatened?(self, enemy_color)
     #  puts 'Check'
     #  is_checkmate?(@board, enemy_color)
     #end

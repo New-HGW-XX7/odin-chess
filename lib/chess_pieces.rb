@@ -1,5 +1,5 @@
 class Piece
-  attr_reader :color, :row, :column
+  attr_accessor :color, :row, :column, :type
   def initialize(color, row, column)
     @color = color
     @row = row
