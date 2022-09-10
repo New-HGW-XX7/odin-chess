@@ -48,6 +48,7 @@ class Game
     # Need to clear and regenerate movesets each turn
     board.each do |row|
       row.each do |field|
+        field.legal_moves.each { |key, value| value = [] } unless field.nil?
         field.find_legal_moves(board) unless field.nil?
         puts "#{field.sign} at #{field.row} / #{field.column} has moves: #{field.legal_moves}" unless field.nil?
       end
@@ -60,9 +61,11 @@ class Game
     king
   end
   
-  def select_piece(player_color, board = @board, row = nil, column = nil)
-    until !board[row][column].nil? and board[row][column].color == player_color
-    puts 'Select row'
+  def select_piece(player_color, board = @board)
+    row = 99
+    column = 99
+    until !board[row].nil? and !board[row][column].nil? and board[row][column].color == player_color and board[row][column].has_legal_moves?
+      puts "Player #{player_color}, select row"
     row = gets.chomp.to_i
     puts 'Select column'
     column = gets.chomp.to_i
@@ -71,10 +74,12 @@ class Game
     board[row][column]
   end
   
-  def select_targetfield(piece, player_color = player_color, board = @board, row = nil, column = nil)
+  def select_targetfield(piece, board = @board)
+    row = 99
+    column = 99
     status_legal = false
     until status_legal
-      puts 'Select target row'
+      puts "Player #{piece.color}, select target row"
       row = gets.chomp.to_i
       puts 'Select target column'
       column = gets.chomp.to_i
@@ -84,7 +89,7 @@ class Game
       temp_game.board = board
       temp_board = temp_game.move(temp_game.board piece.row, piece.column, row, column)
       
-      if (piece.is_in_legal?(row, column) == true) and (is_king_threatened?(temp_board, player_color) == false)
+      if (piece.is_in_legal?(row, column) == true) and (is_king_threatened?(temp_board, piece.color) == false)
         status_legal = true
       else 
         puts 'Illegal move'
@@ -133,6 +138,7 @@ class Game
     end
     king = board[king_row, king_column]
     return false unless king.legal_moves.all? { |set| set.empty? }
+  end
 
     # Extract pathss of attack from possible_threats
     # Further up create an array of own pieces except king
@@ -145,17 +151,19 @@ class Game
     player_color = 'white'
     enemy_color = 'black'
     # Start loop
+    self.print_board
     selected_piece = select_piece(player_color)
     selected_coordinates = select_targetfield(selected_piece)
     @board = move(@board, selected_piece.row, select_piece.column, selected_coordinates[0], selected_coordinates[1])
 
     # Evaluate check and checkmate
-    if is_king_threatened?(@board, enemy_color)
-      puts 'Check'
-      is_checkmate?(@board, enemy_color)
+    #if is_king_threatened?(@board, enemy_color)
+    #  puts 'Check'
+    #  is_checkmate?(@board, enemy_color)
+    #end
 
-
-
+    self.print_board
+  end
   # def play
   #   Set up board with piece objects
   #   Generate legal moves for every piece
@@ -192,9 +200,7 @@ class Game
 end
 
 game = Game.new
-game.print_board
-game.generate_legal_moves_all
-p game.board[0][1]
+game.play
 # # game.board[1][1] = Rook.new('white', 1, 1)
 # # game.board[3][1] = Rook.new('white', 3, 1)
 # game.board[3][2] = Rook.new('white', 3, 2)
