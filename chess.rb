@@ -11,8 +11,8 @@ class Game
   def initialize
     # @board = Array.new(8) { Array.new(8, nil) }
     @board = [
-      [Rook.new('black', 0, 0), Knight.new('black', 0, 1), Bishop.new('black', 0, 2), Queen.new('black', 0, 3), King.new('black', 0, 4), Bishop.new('black', 0, 5), Knight.new('black', 0, 6), Rook.new('black', 0, 7)], # Row 0
-      [Pawn.new('black', 1, 0), Pawn.new('black', 1, 1), Pawn.new('black', 1, 2), Pawn.new('black', 1, 3), Pawn.new('black', 1, 4), Pawn.new('black', 1, 5), Pawn.new('black', 1, 6), Pawn.new('black', 1, 7)], # Row 1
+      [King.new('black', 0, 0), nil, nil, nil, nil, nil, nil, nil], # Row 0
+      [nil, nil, Queen.new('white', 1, 2), nil, nil, nil, nil, nil], # Row 1
       [nil, nil, nil, nil, nil, nil, nil, nil], # Row 2
       [nil, Knight.new('white', 3, 1), nil, nil, nil, nil, nil, nil], # Row 3
       [nil, nil, nil, nil, nil, nil, nil, nil], # Row 4
@@ -142,15 +142,11 @@ class Game
   def is_checkmate?(color_of_king)
     #self.generate_legal_moves_all
     pieces_of_defender = []
-    king_row = nil
-    king_column = nil
-    king = nil
+
     self.board.each do |row|
       row.each do |field|
         pieces_of_defender << field if !field.nil? and field.color == color_of_king and field.type != 'king' # Gets all pieces except king
-        pieces_of_defender.unshift(field) if !field.nil? and field.color == color_of_king and field.type == 'king' # Sets king on position array.first
-        king_row = pieces_of_defender.first.row
-        king_column = pieces_of_defender.first.column
+        pieces_of_defender.unshift(field) if !field.nil? and field.color == color_of_king and field.type == 'king' # Sets king on position array.first NO NEED - MERGE TWO LINES
       end
     end
 
@@ -170,49 +166,64 @@ class Game
     evaluation_array.include?(false) ? false : true
   end
 
-    # Simulate each interception and check if king is still threatened -> if still threatened, checkmate
+  def is_tie?(color_of_king)
+    self.is_checkmate?(color_of_king) # Uses the exact same evaluation process. Only the situation is different.
+  end
 
   def play
-    game_over = false
     checkmate = false
+    tie = false
+
     player_color = 'white'
     enemy_color = 'black'
-    until checkmate # Start loop 
-    self.generate_legal_moves_all
-    self.print_board
-    selected_piece = select_piece(player_color)
-    selected_coordinates = select_targetfield(selected_piece)
-    next if selected_coordinates == false
-    self.move(selected_piece.row, selected_piece.column, selected_coordinates[0], selected_coordinates[1])
 
-    # Evaluate check and checkmate
-    if self.is_king_threatened?(enemy_color)
-      puts 'CHECK'
+    until checkmate or tie # Start loop 
+      self.generate_legal_moves_all
+      self.print_board
+      
+      selected_piece = select_piece(player_color)
+      selected_coordinates = select_targetfield(selected_piece)
+      next if selected_coordinates == false
 
-      if self.is_checkmate?(enemy_color)
-        puts 'CHECKMATE'
-        # checkmate = true
-        # Exit loop, remember to print board one last time
+      self.move(selected_piece.row, selected_piece.column, selected_coordinates[0], selected_coordinates[1])
+
+      # Evaluate check / checkmate and tie
+      if self.is_king_threatened?(enemy_color)
+        puts 'CHECK'
+
+        if self.is_checkmate?(enemy_color)
+          puts 'CHECKMATE'
+          checkmate = true
+          # Exit loop, remember to print board one last time
+        end
+      end
+      
+      if !self.is_king_threatened?(enemy_color)
+        puts 'Checking for tie'
+
+        if self.is_tie?(enemy_color)
+          puts 'TIE'
+          tie = true
+        end
+      end
+
+      puts "\n"
+      #self.print_board
+      case player_color
+      when 'white'
+        player_color = 'black'
+        enemy_color = 'white'
+      when 'black'
+        player_color = 'white'
+        enemy_color = 'black'
       end
     end
 
-    # if self.is_king_threatened(enemy_color) returns false check for tie
-
-    puts "\n"
-    #self.print_board
-    case player_color
-    when 'white'
-      player_color = 'black'
-      enemy_color = 'white'
-    when 'black'
-      player_color = 'white'
-      enemy_color = 'black'
-    end
-    end
+    puts "\n\n"
+    self.print_board
+    puts "The game has ended. Player #{player_color} wins." if checkmate
+    puts 'The game has ended. It is a tie.' if tie
   end
-
-
-        
 
 end
 
