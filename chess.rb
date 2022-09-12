@@ -9,12 +9,11 @@ require './lib/king.rb'
 class Game
   attr_accessor :board
   def initialize
-    # @board = Array.new(8) { Array.new(8, nil) }
     @board = [
-      [King.new('black', 0, 0), nil, nil, nil, nil, nil, nil, nil], # Row 0
-      [nil, nil, Queen.new('white', 1, 2), nil, nil, nil, nil, nil], # Row 1
+      [Rook.new('black', 0, 0), Knight.new('black', 0, 1), Bishop.new('black', 0, 2), Queen.new('black', 0, 3), King.new('black', 0, 4), Bishop.new('black', 0, 5), Knight.new('black', 0, 6), Rook.new('black', 0, 7)], # Row 0
+      [Pawn.new('black', 1, 0), Pawn.new('black', 1, 1), Pawn.new('black', 1, 2), Pawn.new('black', 1, 3), Pawn.new('black', 1, 4), Pawn.new('black', 1, 5), Pawn.new('black', 1, 6), Pawn.new('black', 1, 7)], # Row 1
       [nil, nil, nil, nil, nil, nil, nil, nil], # Row 2
-      [nil, Knight.new('white', 3, 1), nil, nil, nil, nil, nil, nil], # Row 3
+      [nil, nil, nil, nil, nil, nil, nil, nil], # Row 3
       [nil, nil, nil, nil, nil, nil, nil, nil], # Row 4
       [nil, nil, nil, nil, nil, nil, nil, nil], # Row 5
       [Pawn.new('white', 6, 0), Pawn.new('white', 6, 1), Pawn.new('white', 6, 2), Pawn.new('white', 6, 3), Pawn.new('white', 6, 4), Pawn.new('white', 6, 5), Pawn.new('white', 6, 6), Pawn.new('white', 6, 7)], # Row 6
@@ -45,7 +44,6 @@ class Game
   end
 
   def generate_legal_moves_all
-    # Need to clear and regenerate movesets each turn
     self.board.each do |row|
       row.each do |field|
         unless field.nil?
@@ -61,12 +59,6 @@ class Game
       end
     end
   end
-
-  def test_piece
-    king = King.new('black', 2, 2)
-    king.find_legal_moves(@board)
-    king
-  end
   
   def select_piece(player_color, board = @board)
     row = 99
@@ -77,13 +69,13 @@ class Game
     puts 'Select column'
     column = gets.chomp.to_i
     end
-    # Check for tie
     board[row][column]
   end
   
   def select_targetfield(piece)
-    row = 99
-    column = 99
+    row = nil
+    column = nil
+
     status_legal = false
     until status_legal
       puts "Player #{piece.color}, select target row"
@@ -93,12 +85,8 @@ class Game
       
       # Setting up second condition
       temp_game = Game.new
-      copy_of_mainboard = Marshal.load( Marshal.dump(@board) )
+      copy_of_mainboard = Marshal.load( Marshal.dump(@board) ) # This method of creating a deep copy is not my own but was found after some googling.
       temp_game.board = copy_of_mainboard
-      # puts 'Instance of Game created'
-      # puts "mainboard: #{self.board}"
-      # puts "\n\n"
-      # puts "tempboard: #{temp_game.board}"
       temp_game.move(piece.row, piece.column, row, column)
 
       if (piece.is_in_legal?(row, column) == true) and (temp_game.is_king_threatened?(piece.color) == false) # Checking own king
@@ -118,7 +106,6 @@ class Game
     #Updating the piece
     self.board[target_row][target_column].row = target_row
     self.board[target_row][target_column].column = target_column
-    #self.board[target_row][target_column].legal_moves
   end
 
   def is_king_threatened?(color_of_king)
@@ -140,13 +127,10 @@ class Game
   end
 
   def is_checkmate?(color_of_king)
-    #self.generate_legal_moves_all
     pieces_of_defender = []
-
     self.board.each do |row|
       row.each do |field|
-        pieces_of_defender << field if !field.nil? and field.color == color_of_king and field.type != 'king' # Gets all pieces except king
-        pieces_of_defender.unshift(field) if !field.nil? and field.color == color_of_king and field.type == 'king' # Sets king on position array.first NO NEED - MERGE TWO LINES
+        pieces_of_defender << field if !field.nil? and field.color == color_of_king
       end
     end
 
@@ -177,7 +161,8 @@ class Game
     player_color = 'white'
     enemy_color = 'black'
 
-    until checkmate or tie # Start loop 
+    until checkmate or tie
+      puts "\n"
       self.generate_legal_moves_all
       self.print_board
       
@@ -194,7 +179,6 @@ class Game
         if self.is_checkmate?(enemy_color)
           puts 'CHECKMATE'
           checkmate = true
-          # Exit loop, remember to print board one last time
         end
       end
       
@@ -207,8 +191,6 @@ class Game
         end
       end
 
-      puts "\n"
-      #self.print_board
       case player_color
       when 'white'
         player_color = 'black'
