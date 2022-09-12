@@ -14,7 +14,7 @@ class Game
       [Rook.new('black', 0, 0), Knight.new('black', 0, 1), Bishop.new('black', 0, 2), Queen.new('black', 0, 3), King.new('black', 0, 4), Bishop.new('black', 0, 5), Knight.new('black', 0, 6), Rook.new('black', 0, 7)], # Row 0
       [Pawn.new('black', 1, 0), Pawn.new('black', 1, 1), Pawn.new('black', 1, 2), Pawn.new('black', 1, 3), Pawn.new('black', 1, 4), Pawn.new('black', 1, 5), Pawn.new('black', 1, 6), Pawn.new('black', 1, 7)], # Row 1
       [nil, nil, nil, nil, nil, nil, nil, nil], # Row 2
-      [nil, nil, nil, nil, nil, nil, nil, nil], # Row 3
+      [nil, Knight.new('white', 3, 1), nil, nil, nil, nil, nil, nil], # Row 3
       [nil, nil, nil, nil, nil, nil, nil, nil], # Row 4
       [nil, nil, nil, nil, nil, nil, nil, nil], # Row 5
       [Pawn.new('white', 6, 0), Pawn.new('white', 6, 1), Pawn.new('white', 6, 2), Pawn.new('white', 6, 3), Pawn.new('white', 6, 4), Pawn.new('white', 6, 5), Pawn.new('white', 6, 6), Pawn.new('white', 6, 7)], # Row 6
@@ -57,7 +57,7 @@ class Game
         end
 
         field.find_legal_moves(self.board) unless field.nil?
-        puts "#{field.sign} at #{field.row} / #{field.column} has moves: #{field.legal_moves}" unless field.nil?
+        #puts "#{field.sign} at #{field.row} / #{field.column} has moves: #{field.legal_moves}" unless field.nil?
       end
     end
   end
@@ -187,17 +187,19 @@ class Game
 
     # Evaluate check and checkmate
     if self.is_king_threatened?(enemy_color)
-      puts 'Check'
+      puts 'CHECK'
 
       if self.is_checkmate?(enemy_color)
         puts 'CHECKMATE'
         # checkmate = true
+        # Exit loop, remember to print board one last time
       end
     end
 
     # if self.is_king_threatened(enemy_color) returns false check for tie
 
-    self.print_board
+    puts "\n"
+    #self.print_board
     case player_color
     when 'white'
       player_color = 'black'
