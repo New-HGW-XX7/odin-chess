@@ -7,7 +7,7 @@ require './lib/pawn.rb'
 require './lib/king.rb'
 
 class Game
-  attr_accessor :board
+  attr_accessor :board, :player_color, :enemy_color
   def initialize
     @board = [
       [Rook.new('black', 0, 0), Knight.new('black', 0, 1), Bishop.new('black', 0, 2), Queen.new('black', 0, 3), King.new('black', 0, 4), Bishop.new('black', 0, 5), Knight.new('black', 0, 6), Rook.new('black', 0, 7)], # Row 0
@@ -19,6 +19,8 @@ class Game
       [Pawn.new('white', 6, 0), Pawn.new('white', 6, 1), Pawn.new('white', 6, 2), Pawn.new('white', 6, 3), Pawn.new('white', 6, 4), Pawn.new('white', 6, 5), Pawn.new('white', 6, 6), Pawn.new('white', 6, 7)], # Row 6
       [Rook.new('white', 7, 0), Knight.new('white', 7, 1), Bishop.new('white', 7, 2), Queen.new('white', 7, 3), King.new('white', 7, 4), Bishop.new('white', 7, 5), Knight.new('white', 7, 6), Rook.new('white', 7, 7)] # Row 7
     ]
+    @player_color = 'white'
+    @enemy_color = 'black'
   end
 
   def print_board
@@ -158,13 +160,19 @@ class Game
     checkmate = false
     tie = false
 
-    player_color = 'white'
-    enemy_color = 'black'
+    #player_color = 'white'
+    #enemy_color = 'black'
 
     until checkmate or tie
+      
       puts "\n"
       self.generate_legal_moves_all
       self.print_board
+      # puts "Do you wish to save your game? Press 'y'. Else press any other button"
+      # if gets.chomp == 'y'
+      #   puts 'Please enter the name of your savestate'
+      #   self.save_game(gets.chomp)
+      # end
       
       selected_piece = select_piece(player_color)
       selected_coordinates = select_targetfield(selected_piece)
@@ -193,11 +201,11 @@ class Game
 
       case player_color
       when 'white'
-        player_color = 'black'
-        enemy_color = 'white'
+        self.player_color = 'black'
+        self.enemy_color = 'white'
       when 'black'
-        player_color = 'white'
-        enemy_color = 'black'
+        self.player_color = 'white'
+        self.enemy_color = 'black'
       end
     end
 
@@ -209,5 +217,14 @@ class Game
 
 end
 
+# puts "Do you wish to load? Press 'y'"
+# if gets.chomp == 'y'
+#   puts 'Enter the name of the file without extension.'
+#   puts Dir.glob('*.{txt}').join(",\n")
+#   game = Game.load_game(gets.chomp)
+# else
+#   game = Game.new
+#   puts 'New game created'
+# end
 game = Game.new
 game.play
