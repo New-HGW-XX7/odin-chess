@@ -178,9 +178,6 @@ class Game
     checkmate = false
     tie = false
 
-    #player_color = 'white'
-    #enemy_color = 'black'
-
     until checkmate or tie
       
       puts "\n"
@@ -244,5 +241,5 @@ else
   game = Game.new
   puts 'New game created'
 end
-#game = Game.new
+
 game.play
