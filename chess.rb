@@ -156,6 +156,24 @@ class Game
     self.is_checkmate?(color_of_king) # Uses the exact same evaluation process. Only the situation is different.
   end
 
+  def save_game(filename)
+    data = Marshal.dump([self.board, self.player_color, self.enemy_color])
+    save = File.open("#{filename}.txt", "w")
+    save.puts data
+    save.close
+  end
+
+  def self.load_game(filename)
+    string = File.open("#{filename}.txt", "r")
+    data = Marshal.load(string)
+    
+    loaded_game = self.new
+    loaded_game.board = data[0]
+    loaded_game.player_color = data[1]
+    loaded_game.enemy_color = data[2]
+    loaded_game
+  end
+
   def play
     checkmate = false
     tie = false
@@ -168,11 +186,11 @@ class Game
       puts "\n"
       self.generate_legal_moves_all
       self.print_board
-      # puts "Do you wish to save your game? Press 'y'. Else press any other button"
-      # if gets.chomp == 'y'
-      #   puts 'Please enter the name of your savestate'
-      #   self.save_game(gets.chomp)
-      # end
+      puts "Do you wish to save your game? Press 'y'. Else press any other button"
+      if gets.chomp == 'y'
+        puts 'Please enter the name of your savestate'
+        self.save_game(gets.chomp)
+      end
       
       selected_piece = select_piece(player_color)
       selected_coordinates = select_targetfield(selected_piece)
@@ -217,14 +235,14 @@ class Game
 
 end
 
-# puts "Do you wish to load? Press 'y'"
-# if gets.chomp == 'y'
-#   puts 'Enter the name of the file without extension.'
-#   puts Dir.glob('*.{txt}').join(",\n")
-#   game = Game.load_game(gets.chomp)
-# else
-#   game = Game.new
-#   puts 'New game created'
-# end
-game = Game.new
+puts "Do you wish to load? Press 'y'"
+if gets.chomp == 'y'
+  puts 'Enter the name of the file without extension.'
+  puts Dir.glob('*.{txt}').join(",\n")
+  game = Game.load_game(gets.chomp)
+else
+  game = Game.new
+  puts 'New game created'
+end
+#game = Game.new
 game.play
